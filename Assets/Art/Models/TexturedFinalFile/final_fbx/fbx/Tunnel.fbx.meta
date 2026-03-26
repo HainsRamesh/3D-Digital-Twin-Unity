@@ -1,0 +1,330 @@
+fileFormatVersion: 2
+guid: 620f92535c228384baae993ae8221812
+ModelImporter:
+  serializedVersion: 24200
+  internalIDToNameTable: []
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Industrial Stairs
+    second: {fileID: 2100000, guid: 412a5c203aa0c8e4c8858c3034fb3159, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pipe Standard.008
+    second: {fileID: 2100000, guid: db7da10bc6a32144f91fe677aa87f961, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: crane
+    second: {fileID: 2100000, guid: b748685c0c45f7b41a35fd2940231671, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: main_entrance
+    second: {fileID: 2100000, guid: c3b0f3a4c371eb04eaeb45b3e4374ddd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: rail
+    second: {fileID: 2100000, guid: 1a806f32946ceff47b3beed780fe227d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: rail_round_pipe
+    second: {fileID: 2100000, guid: bdd4f2810ee2a8b44abae17456b70385, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tunnel
+    second: {fileID: 2100000, guid: 201d2cb335ed0504a8c16e2f68a5c438, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tunnel boring machine-part_1
+    second: {fileID: 2100000, guid: c051527f84e87404a90265b4d549de7e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tunnel boring machine-part_2
+    second: {fileID: 2100000, guid: 433b402f6e948dd44b5344b5ad428675, type: 2}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_Industrial Stairs_AlbedoTransparency
+    second: {fileID: 2800000, guid: 5b64254a4f356bd4a8604dc077646a1e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_Industrial Stairs_Emission
+    second: {fileID: 2800000, guid: 7459cb02d28730047bd82ae1c0d1abb3, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_Industrial Stairs_Normal
+    second: {fileID: 2800000, guid: ae46c1dabb8fcee418585f2380003fbe, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_Industrial Stairs_SpecularSmoothness
+    second: {fileID: 2800000, guid: 36ff8f7f433fe3f4fa1c59625e5906af, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_Pipe Standard.008_AlbedoTransparency
+    second: {fileID: 2800000, guid: ad63b8ae8b3d5f54892a89c592bed2d5, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_Pipe Standard.008_Emission
+    second: {fileID: 2800000, guid: 33d6d7efc2e708d41bef114e2e36f56c, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_Pipe Standard.008_Normal
+    second: {fileID: 2800000, guid: 287b3598287ebfa4ebf992f3d8a9082c, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_Pipe Standard.008_SpecularSmoothness
+    second: {fileID: 2800000, guid: 6ca3eec1fa3c138498b0400d3b3e83b9, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_crane_AlbedoTransparency
+    second: {fileID: 2800000, guid: fa654302b77e72b47bfa198ce5fc4f47, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_crane_Emission
+    second: {fileID: 2800000, guid: d8d16a3277f7398418cbb0fbef2a3561, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_crane_Normal
+    second: {fileID: 2800000, guid: 8aec2dadaabd5884eb376fddf28287cc, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_crane_SpecularSmoothness
+    second: {fileID: 2800000, guid: 43cb955edd4e18c4a8435666a1486d4b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_main_entrance_AlbedoTransparency
+    second: {fileID: 2800000, guid: e90b95e9fa6eaaf46afd3f39bf9fd974, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_main_entrance_Emission
+    second: {fileID: 2800000, guid: a3c71b4ba3243a449bd97da0f64cd803, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_main_entrance_Normal
+    second: {fileID: 2800000, guid: d6ec225b32de28943b0c40603d746ce8, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_main_entrance_SpecularSmoothness
+    second: {fileID: 2800000, guid: 574ccf63c2bdb3f4681dd183e68fe999, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_rail_AlbedoTransparency
+    second: {fileID: 2800000, guid: d2f869b3ee8c9984882d7cfa42720bdf, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_rail_Emission
+    second: {fileID: 2800000, guid: 11d14889dfbe85640918e99532431f18, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_rail_Normal
+    second: {fileID: 2800000, guid: 0b3a8d6aa6a34be48b38f547309d1bc7, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_rail_round_pipe_AlbedoTransparency
+    second: {fileID: 2800000, guid: a94931c2d7985524595b21e77cf61ef6, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_rail_round_pipe_Emission
+    second: {fileID: 2800000, guid: 2d67684296343ae4ea0f9d4390993e81, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_rail_round_pipe_Normal
+    second: {fileID: 2800000, guid: 4ca52607c2975cf43a224a52a1822c59, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_rail_round_pipe_SpecularSmoothness
+    second: {fileID: 2800000, guid: 162464da69d12d44d8d2b038dc4811a0, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_tunnel boring machine-part_1_AlbedoTransparency
+    second: {fileID: 2800000, guid: 6e96fcbdd9191f34eba23f626b309dbe, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_tunnel boring machine-part_1_Emission
+    second: {fileID: 2800000, guid: a6c27d2590978784ca136e8457fc23b4, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_tunnel boring machine-part_1_Normal
+    second: {fileID: 2800000, guid: 079cfd995eeaadf4ca8eb0652817a20b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_tunnel boring machine-part_1_SpecularSmoothness
+    second: {fileID: 2800000, guid: 625ac78f1d39d074fb52918a6306b0d5, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_tunnel boring machine-part_2_AlbedoTransparency
+    second: {fileID: 2800000, guid: b00a40d1d48196d459ba28fc4c63dbeb, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_tunnel boring machine-part_2_Emission
+    second: {fileID: 2800000, guid: 960b10ba45a58a14d838ba5363821581, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_tunnel boring machine-part_2_Normal
+    second: {fileID: 2800000, guid: b00a07ed3d7521c4ba549248c15841ba, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_tunnel boring machine-part_2_SpecularSmoothness
+    second: {fileID: 2800000, guid: e2297819d9462224a84feef990fc80e4, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_tunnel_AlbedoTransparency
+    second: {fileID: 2800000, guid: a1b8ce97d0c734641b330c5ebf5407ce, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_tunnel_Emission
+    second: {fileID: 2800000, guid: 15a8f00d8b0478f46b71d336286d917c, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_tunnel_Normal
+    second: {fileID: 2800000, guid: 443351fa02623bb4ca964047b9046e38, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Tunnel_Full_Env_4_tunnel_SpecularSmoothness
+    second: {fileID: 2800000, guid: 80b8933cbe7a40e4986e1aa689a8f7eb, type: 3}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    generateMeshLods: 0
+    meshLodGenerationFlags: 0
+    maximumMeshLod: -1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    strictVertexDataChecks: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
