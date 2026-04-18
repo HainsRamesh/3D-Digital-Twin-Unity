@@ -393,7 +393,7 @@ PrefabInstance:
     - target: {fileID: 5866666021909216657, guid: 585cddde1d133a64ea92d08aa882d93c, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: f916fc235082d214da2db1b10c1a80bd, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 585cddde1d133a64ea92d08aa882d93c, type: 3}
       propertyPath: m_ApplyRootMotion
       value: 0
@@ -411,6 +411,11 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 585cddde1d133a64ea92d08aa882d93c, type: 3}
   m_PrefabInstance: {fileID: 1662231334}
   m_PrefabAsset: {fileID: 0}
+--- !u!95 &1662231336 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 585cddde1d133a64ea92d08aa882d93c, type: 3}
+  m_PrefabInstance: {fileID: 1662231334}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1662231337
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -423,7 +428,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e585e3030110a84f82576be82e55b7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PoseLandmarkReceiver
-  brokerAddress: 192.168.1.16
+  brokerAddress: 192.168.1.104
   brokerPort: 1883
   isEncrypted: 0
   connectionDelay: 500
@@ -432,15 +437,10 @@ MonoBehaviour:
   mqttUserName: 
   mqttPassword: 
   poseTopic: phone/pose
-  handWeight: 1
-  footWeight: 1
-  bodyWeight: 0.6
-  headWeight: 0.7
-  emaAlpha: 0.2
-  jitterThreshold: 0.008
-  minVisibility: 0.3
-  showDebugLogs: 1
-  drawDebugSkeleton: 1
+  avatarAnimator: {fileID: 1662231336}
+  smoothSpeed: 10
+  minVisibility: 0.5
+  showDebugLogs: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
