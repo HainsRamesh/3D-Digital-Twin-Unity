@@ -229,7 +229,7 @@ public class PoseLandmarkReceiver : M2MqttUnityClient
 
         // ── Compute scale factor: map MediaPipe proportions to avatar ──
         // Use shoulder width as the reference measurement
-        float scaleFactor = (avatarShoulderWidth / mpShoulderWidth) * 3f;
+        float scaleFactor = (avatarShoulderWidth / mpShoulderWidth) * 2f;
 
         // ── Convert landmarks to avatar-relative positions ────────
         // All positions are relative to hip center, then scaled to avatar size
@@ -249,7 +249,7 @@ public class PoseLandmarkReceiver : M2MqttUnityClient
             return avatarRootPos + new Vector3(rx, ry + avatarHipHeight * 0.45f, rz);
         }
 
-        float dt = Time.deltaTime * 10f;
+        float dt = Time.deltaTime * 18f;
 
         // Store debug points
         debugWorldPts = new Vector3[n];
@@ -290,29 +290,29 @@ public class PoseLandmarkReceiver : M2MqttUnityClient
 
         // ── Elbows (hints) ────────────────────────────────────────
         if (V(lm, L_ELBOW))
-            ikLeftElbow = Vector3.Lerp(ikLeftElbow, MP(L_ELBOW), dt);
+            ikLeftElbow = Vector3.Lerp(ikLeftElbow, MP(L_ELBOW), dt * 1.5f);
         if (V(lm, R_ELBOW))
-            ikRightElbow = Vector3.Lerp(ikRightElbow, MP(R_ELBOW), dt);
+            ikRightElbow = Vector3.Lerp(ikRightElbow, MP(R_ELBOW), dt * 1.5f);
 
         // ── Feet ──────────────────────────────────────────────────
         if (V(lm, L_ANKLE))
         {
             Vector3 ft = MP(L_ANKLE);
-            ft.y = avatarRootPos.y; // always on ground
-            ikLeftFoot = Vector3.Lerp(ikLeftFoot, ft, dt);
+            ft.y = transform.position.y; // hard lock to ground
+            ikLeftFoot = Vector3.Lerp(ikLeftFoot, ft, dt * 1.5f);
         }
         if (V(lm, R_ANKLE))
         {
             Vector3 ft = MP(R_ANKLE);
-            ft.y = avatarRootPos.y; // always on ground
-            ikRightFoot = Vector3.Lerp(ikRightFoot, ft, dt);
+            ft.y = transform.position.y; // hard lock to ground
+            ikRightFoot = Vector3.Lerp(ikRightFoot, ft, dt * 1.5f);
         }
 
         // ── Knees (hints) ─────────────────────────────────────────
         if (V(lm, L_KNEE))
-            ikLeftKnee = Vector3.Lerp(ikLeftKnee, MP(L_KNEE), dt);
+            ikLeftKnee = Vector3.Lerp(ikLeftKnee, MP(L_KNEE), dt * 1.5f);
         if (V(lm, R_KNEE))
-            ikRightKnee = Vector3.Lerp(ikRightKnee, MP(R_KNEE), dt);
+            ikRightKnee = Vector3.Lerp(ikRightKnee, MP(R_KNEE), dt * 1.5f);
 
         // ── Head look ─────────────────────────────────────────────
         if (V(lm, NOSE))

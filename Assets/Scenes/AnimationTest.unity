@@ -436,8 +436,8 @@ MonoBehaviour:
   footWeight: 1
   bodyWeight: 0.6
   headWeight: 0.7
-  emaAlpha: 0.2
-  jitterThreshold: 0.008
+  emaAlpha: 0.45
+  jitterThreshold: 0.002
   minVisibility: 0.3
   showDebugLogs: 1
   drawDebugSkeleton: 1
