@@ -12,11 +12,18 @@ using uPLibrary.Networking.M2Mqtt.Messages;
 /// All positions are computed relative to the hip center, then
 /// scaled to match the avatar's actual proportions.
 /// 
+/// Handles occlusion gracefully: when a body part loses visibility,
+/// it holds for a short delay, then drifts toward a natural rest pose
+/// instead of freezing or jittering.
+/// 
 /// REQUIRES: AnimatorController with IK Pass enabled.
 /// </summary>
 [RequireComponent(typeof(Animator))]
 public class PoseLandmarkReceiver : M2MqttUnityClient
 {
+    [Header("Fine Tuning")]
+    [Range(0.5f, 1.5f)] public float handReachScale = 1f;
+
     [Header("MQTT")]
     public string poseTopic = "phone/pose";
 
@@ -33,6 +40,12 @@ public class PoseLandmarkReceiver : M2MqttUnityClient
     [Header("Visibility")]
     [Range(0f, 1f)] public float minVisibility = 0.3f;
 
+    [Header("Occlusion Handling")]
+    [Tooltip("Seconds to hold last good position before drifting to rest")]
+    [Range(0f, 2f)] public float missingHoldDelay = 0.5f;
+    [Tooltip("How quickly missing limbs relax to rest pose (higher = faster)")]
+    [Range(0f, 2f)] public float missingDecayRate = 0.3f;
+
     [Header("Debug")]
     public bool showDebugLogs = false;
     public bool drawDebugSkeleton = true;
@@ -47,6 +60,7 @@ public class PoseLandmarkReceiver : M2MqttUnityClient
     const int L_KNEE = 25, R_KNEE = 26;
     const int L_ANKLE = 27, R_ANKLE = 28;
     const int L_FOOT = 31, R_FOOT = 32;
+    const float MAX_JUMP_PER_FRAME = 0.4f;   // meters — reject teleports
 
     // ── Animator & avatar measurements ───────────────────────────
     private Animator anim;
@@ -67,11 +81,18 @@ public class PoseLandmarkReceiver : M2MqttUnityClient
     private Vector3 ikLookTarget;
     private bool hasData = false;
 
+    // ── Occlusion: time since each limb was last seen ────────────
+    private float leftHandMissing = 0f, rightHandMissing = 0f;
+    private float leftElbowMissing = 0f, rightElbowMissing = 0f;
+    private float leftFootMissing = 0f, rightFootMissing = 0f;
+    private float leftKneeMissing = 0f, rightKneeMissing = 0f;
+
     // ── EMA smoothing ───────────────────────────────────────────
     private float[] smoothX, smoothY, smoothZ;
     private bool emaInit = false;
 
     // ── MediaPipe body measurements (learned from first frame) ───
+    private float mpHipAnkleDist = 0.3f;
     private float mpShoulderWidth = 0.1f;
     private float mpTorsoHeight = 0.1f;
     private bool mpCalibrated = false;
@@ -143,6 +164,29 @@ public class PoseLandmarkReceiver : M2MqttUnityClient
                   $"arm={avatarArmLength:F2}, shoulder={avatarShoulderWidth:F2}");
     }
 
+    Vector3 SafeLerp(Vector3 current, Vector3 target, float t)
+    {
+        Vector3 delta = target - current;
+        if (delta.magnitude > MAX_JUMP_PER_FRAME)
+            target = current + delta.normalized * MAX_JUMP_PER_FRAME;
+        return Vector3.Lerp(current, target, t);
+    }
+
+    /// <summary>
+    /// Updates a missing-time counter and drifts the IK target toward a rest position
+    /// once the limb has been invisible for longer than missingHoldDelay.
+    /// Pure decay logic — call this only when the landmark is NOT visible.
+    /// </summary>
+    Vector3 DriftToRest(Vector3 current, Vector3 restPos, ref float missingTimer, float dt)
+    {
+        missingTimer += Time.deltaTime;
+        if (missingTimer > missingHoldDelay)
+        {
+            return Vector3.Lerp(current, restPos, dt * missingDecayRate);
+        }
+        return current; // hold last good position during the delay window
+    }
+
     // ── MQTT ───────────────────────────────────────────────────────
     protected override void SubscribeTopics()
     {
@@ -211,42 +255,43 @@ public class PoseLandmarkReceiver : M2MqttUnityClient
 
         // ── Calibrate body proportions from MediaPipe data ────────
         if (!mpCalibrated && V(lm, L_SHOULDER) && V(lm, R_SHOULDER) &&
-            V(lm, L_HIP) && V(lm, R_HIP))
+            V(lm, L_HIP) && V(lm, R_HIP) &&
+            V(lm, L_ANKLE) && V(lm, R_ANKLE))
         {
             mpShoulderWidth = Mathf.Abs(smoothX[L_SHOULDER] - smoothX[R_SHOULDER]);
             float shoulderY = (smoothY[L_SHOULDER] + smoothY[R_SHOULDER]) * 0.5f;
             float hipY = (smoothY[L_HIP] + smoothY[R_HIP]) * 0.5f;
+            float ankleY = (smoothY[L_ANKLE] + smoothY[R_ANKLE]) * 0.5f;
             mpTorsoHeight = Mathf.Abs(hipY - shoulderY);
+            mpHipAnkleDist = Mathf.Abs(ankleY - hipY);
 
-            if (mpShoulderWidth > 0.01f && mpTorsoHeight > 0.01f)
+            if (mpShoulderWidth > 0.01f && mpTorsoHeight > 0.01f && mpHipAnkleDist > 0.01f)
             {
                 mpCalibrated = true;
-                Debug.Log($"[Pose] Calibrated: MP shoulder={mpShoulderWidth:F3}, torso={mpTorsoHeight:F3}");
+                Debug.Log($"[Pose] Calibrated: shoulder={mpShoulderWidth:F3}, " +
+                          $"torso={mpTorsoHeight:F3}, hipAnkle={mpHipAnkleDist:F3}");
             }
         }
 
         if (!mpCalibrated) return;
 
-        // ── Compute scale factor: map MediaPipe proportions to avatar ──
-        // Use shoulder width as the reference measurement
-        float scaleFactor = (avatarShoulderWidth / mpShoulderWidth) * 2f;
+        // ── Compute scale factors ──────────────────────────────────
+        float scaleFactor = (avatarShoulderWidth / mpShoulderWidth);
+        float yScaleFactor = avatarHipHeight / mpHipAnkleDist;
 
-        // ── Convert landmarks to avatar-relative positions ────────
-        // All positions are relative to hip center, then scaled to avatar size
+        // ── Hip center ─────────────────────────────────────────────
         float hipCX = (smoothX[L_HIP] + smoothX[R_HIP]) * 0.5f;
         float hipCY = (smoothY[L_HIP] + smoothY[R_HIP]) * 0.5f;
         float hipCZ = (smoothZ[L_HIP] + smoothZ[R_HIP]) * 0.5f;
 
         // Convert a MediaPipe landmark to avatar world position
-        // relative to hip center, scaled to avatar proportions
         Vector3 MP(int idx)
         {
-            float rx = -(smoothX[idx] - hipCX) * scaleFactor; // negate X (mirror fix)
-            float ry = -(smoothY[idx] - hipCY) * scaleFactor; // negate Y (flip up)
-            float rz = -(smoothZ[idx] - hipCZ) * scaleFactor * 0.3f; // reduce Z depth influence
+            float rx = -(smoothX[idx] - hipCX) * scaleFactor;
+            float ry = -(smoothY[idx] - hipCY) * yScaleFactor;
+            float rz = -(smoothZ[idx] - hipCZ) * scaleFactor * 0.3f;
 
-            // Place relative to avatar's hip position
-            return avatarRootPos + new Vector3(rx, ry + avatarHipHeight * 0.45f, rz);
+            return avatarRootPos + new Vector3(rx, ry + avatarHipHeight, rz);
         }
 
         float dt = Time.deltaTime * 18f;
@@ -258,7 +303,6 @@ public class PoseLandmarkReceiver : M2MqttUnityClient
         // ── Body position (hips) ──────────────────────────────────
         if (V(lm, L_HIP) && V(lm, R_HIP))
         {
-            // Hip lateral movement only (keep grounded)
             float hipLateralX = -((smoothX[L_HIP] + smoothX[R_HIP]) * 0.5f - 0.5f) * scaleFactor;
             float hipLateralZ = -((smoothZ[L_HIP] + smoothZ[R_HIP]) * 0.5f) * scaleFactor;
 
@@ -266,53 +310,137 @@ public class PoseLandmarkReceiver : M2MqttUnityClient
             ikBodyPos = Vector3.Lerp(ikBodyPos, bodyTarget, dt);
         }
 
-        // ── Body rotation ─────────────────────────────────────────
-        if (V(lm, L_SHOULDER) && V(lm, R_SHOULDER) && V(lm, L_HIP) && V(lm, R_HIP))
+        // ── Body rotation (Y-axis twist only, horizontal plane) ──
+        if (V(lm, L_SHOULDER) && V(lm, R_SHOULDER))
         {
             Vector3 lSho = MP(L_SHOULDER), rSho = MP(R_SHOULDER);
-            Vector3 lHip = MP(L_HIP), rHip = MP(R_HIP);
-            Vector3 hipMid = (lHip + rHip) * 0.5f;
-            Vector3 shoMid = (lSho + rSho) * 0.5f;
 
-            Vector3 up = (shoMid - hipMid).normalized;
-            Vector3 right = (rSho - lSho).normalized;
-            Vector3 forward = Vector3.Cross(up, right).normalized;
+            Vector3 shoulderLine = rSho - lSho;
+            shoulderLine.y = 0f;
 
-            if (forward.sqrMagnitude > 0.001f)
-                ikBodyRot = Quaternion.Slerp(ikBodyRot, Quaternion.LookRotation(forward, up), dt);
+            if (shoulderLine.sqrMagnitude > 0.001f)
+            {
+                Vector3 right = shoulderLine.normalized;
+                Vector3 forward = Vector3.Cross(right, Vector3.up).normalized;
+
+                Quaternion targetRot = Quaternion.LookRotation(forward, Vector3.up);
+                ikBodyRot = Quaternion.Slerp(ikBodyRot, targetRot, dt);
+            }
         }
 
-        // ── Hands ─────────────────────────────────────────────────
+        // ── Hands (with occlusion handling) ───────────────────────
         if (V(lm, L_WRIST))
-            ikLeftHand = Vector3.Lerp(ikLeftHand, MP(L_WRIST), dt * 2f);
+        {
+            leftHandMissing = 0f;
+            Vector3 shoulderPos = MP(L_SHOULDER);
+            Vector3 target = shoulderPos + (MP(L_WRIST) - shoulderPos) * handReachScale;
+            ikLeftHand = SafeLerp(ikLeftHand, target, dt * 2f);
+        }
+        else
+        {
+            // Rest pose: hand hangs naturally at side, below shoulder
+            Vector3 shoulderPos = V(lm, L_SHOULDER) ? MP(L_SHOULDER)
+                : avatarRootPos + new Vector3(-avatarShoulderWidth * 0.5f, avatarHipHeight + 0.5f, 0);
+            Vector3 restPos = shoulderPos + Vector3.down * avatarArmLength * 0.9f;
+            ikLeftHand = DriftToRest(ikLeftHand, restPos, ref leftHandMissing, dt);
+        }
+
         if (V(lm, R_WRIST))
-            ikRightHand = Vector3.Lerp(ikRightHand, MP(R_WRIST), dt * 2f);
+        {
+            rightHandMissing = 0f;
+            Vector3 shoulderPos = MP(R_SHOULDER);
+            Vector3 target = shoulderPos + (MP(R_WRIST) - shoulderPos) * handReachScale;
+            ikRightHand = SafeLerp(ikRightHand, target, dt * 2f);
+        }
+        else
+        {
+            Vector3 shoulderPos = V(lm, R_SHOULDER) ? MP(R_SHOULDER)
+                : avatarRootPos + new Vector3(avatarShoulderWidth * 0.5f, avatarHipHeight + 0.5f, 0);
+            Vector3 restPos = shoulderPos + Vector3.down * avatarArmLength * 0.9f;
+            ikRightHand = DriftToRest(ikRightHand, restPos, ref rightHandMissing, dt);
+        }
 
-        // ── Elbows (hints) ────────────────────────────────────────
+        // ── Elbows (with occlusion handling) ──────────────────────
         if (V(lm, L_ELBOW))
+        {
+            leftElbowMissing = 0f;
             ikLeftElbow = Vector3.Lerp(ikLeftElbow, MP(L_ELBOW), dt * 1.5f);
-        if (V(lm, R_ELBOW))
-            ikRightElbow = Vector3.Lerp(ikRightElbow, MP(R_ELBOW), dt * 1.5f);
+        }
+        else
+        {
+            // Rest: elbow halfway between shoulder and resting hand position
+            Vector3 restPos = (ikLeftHand + (V(lm, L_SHOULDER) ? MP(L_SHOULDER) : ikLeftHand)) * 0.5f;
+            ikLeftElbow = DriftToRest(ikLeftElbow, restPos, ref leftElbowMissing, dt);
+        }
 
-        // ── Feet ──────────────────────────────────────────────────
+        if (V(lm, R_ELBOW))
+        {
+            rightElbowMissing = 0f;
+            ikRightElbow = Vector3.Lerp(ikRightElbow, MP(R_ELBOW), dt * 1.5f);
+        }
+        else
+        {
+            Vector3 restPos = (ikRightHand + (V(lm, R_SHOULDER) ? MP(R_SHOULDER) : ikRightHand)) * 0.5f;
+            ikRightElbow = DriftToRest(ikRightElbow, restPos, ref rightElbowMissing, dt);
+        }
+
+        // ── Feet (with occlusion handling) ────────────────────────
         if (V(lm, L_ANKLE))
         {
+            leftFootMissing = 0f;
             Vector3 ft = MP(L_ANKLE);
-            ft.y = transform.position.y; // hard lock to ground
-            ikLeftFoot = Vector3.Lerp(ikLeftFoot, ft, dt * 1.5f);
+            float groundY = transform.position.y;
+            if (ft.y < groundY + 0.05f)
+                ft.y = groundY;
+            ikLeftFoot = SafeLerp(ikLeftFoot, ft, dt * 1.5f);
         }
-        if (V(lm, R_ANKLE))
+        else
         {
-            Vector3 ft = MP(R_ANKLE);
-            ft.y = transform.position.y; // hard lock to ground
-            ikRightFoot = Vector3.Lerp(ikRightFoot, ft, dt * 1.5f);
+            // Rest: foot on ground beneath the hip
+            Vector3 restPos = avatarRootPos + new Vector3(-avatarShoulderWidth * 0.4f, 0, 0);
+            ikLeftFoot = DriftToRest(ikLeftFoot, restPos, ref leftFootMissing, dt);
         }
 
-        // ── Knees (hints) ─────────────────────────────────────────
+        if (V(lm, R_ANKLE))
+        {
+            rightFootMissing = 0f;
+            Vector3 ft = MP(R_ANKLE);
+            float groundY = transform.position.y;
+            if (ft.y < groundY + 0.05f)
+                ft.y = groundY;
+            ikRightFoot = SafeLerp(ikRightFoot, ft, dt * 1.5f);
+        }
+        else
+        {
+            Vector3 restPos = avatarRootPos + new Vector3(avatarShoulderWidth * 0.4f, 0, 0);
+            ikRightFoot = DriftToRest(ikRightFoot, restPos, ref rightFootMissing, dt);
+        }
+
+        // ── Knees (with occlusion handling) ───────────────────────
         if (V(lm, L_KNEE))
+        {
+            leftKneeMissing = 0f;
             ikLeftKnee = Vector3.Lerp(ikLeftKnee, MP(L_KNEE), dt * 1.5f);
+        }
+        else
+        {
+            // Rest: knee halfway between hip and resting foot
+            Vector3 hipPos = avatarRootPos + new Vector3(-avatarShoulderWidth * 0.4f, avatarHipHeight, 0);
+            Vector3 restPos = (hipPos + ikLeftFoot) * 0.5f;
+            ikLeftKnee = DriftToRest(ikLeftKnee, restPos, ref leftKneeMissing, dt);
+        }
+
         if (V(lm, R_KNEE))
+        {
+            rightKneeMissing = 0f;
             ikRightKnee = Vector3.Lerp(ikRightKnee, MP(R_KNEE), dt * 1.5f);
+        }
+        else
+        {
+            Vector3 hipPos = avatarRootPos + new Vector3(avatarShoulderWidth * 0.4f, avatarHipHeight, 0);
+            Vector3 restPos = (hipPos + ikRightFoot) * 0.5f;
+            ikRightKnee = DriftToRest(ikRightKnee, restPos, ref rightKneeMissing, dt);
+        }
 
         // ── Head look ─────────────────────────────────────────────
         if (V(lm, NOSE))
@@ -339,30 +467,30 @@ public class PoseLandmarkReceiver : M2MqttUnityClient
         Vector3 fixedBody = anim.bodyPosition;
         fixedBody.y = transform.position.y + avatarHipHeight;
         anim.bodyPosition = fixedBody;
-        //anim.bodyRotation = Quaternion.Slerp(anim.bodyRotation, ikBodyRot, bodyWeight);
+        anim.bodyRotation = Quaternion.Slerp(anim.bodyRotation, ikBodyRot, bodyWeight);
 
         // Left hand
         anim.SetIKPositionWeight(AvatarIKGoal.LeftHand, handWeight);
         anim.SetIKPosition(AvatarIKGoal.LeftHand, ikLeftHand);
-        anim.SetIKHintPositionWeight(AvatarIKHint.LeftElbow, 0.7f);
+        anim.SetIKHintPositionWeight(AvatarIKHint.LeftElbow, 1f);
         anim.SetIKHintPosition(AvatarIKHint.LeftElbow, ikLeftElbow);
 
         // Right hand
         anim.SetIKPositionWeight(AvatarIKGoal.RightHand, handWeight);
         anim.SetIKPosition(AvatarIKGoal.RightHand, ikRightHand);
-        anim.SetIKHintPositionWeight(AvatarIKHint.RightElbow, 0.7f);
+        anim.SetIKHintPositionWeight(AvatarIKHint.RightElbow, 1f);
         anim.SetIKHintPosition(AvatarIKHint.RightElbow, ikRightElbow);
 
         // Left foot
         anim.SetIKPositionWeight(AvatarIKGoal.LeftFoot, footWeight);
         anim.SetIKPosition(AvatarIKGoal.LeftFoot, ikLeftFoot);
-        anim.SetIKHintPositionWeight(AvatarIKHint.LeftKnee, 0.5f);
+        anim.SetIKHintPositionWeight(AvatarIKHint.LeftKnee, 1f);
         anim.SetIKHintPosition(AvatarIKHint.LeftKnee, ikLeftKnee);
 
         // Right foot
         anim.SetIKPositionWeight(AvatarIKGoal.RightFoot, footWeight);
         anim.SetIKPosition(AvatarIKGoal.RightFoot, ikRightFoot);
-        anim.SetIKHintPositionWeight(AvatarIKHint.RightKnee, 0.5f);
+        anim.SetIKHintPositionWeight(AvatarIKHint.RightKnee, 1f);
         anim.SetIKHintPosition(AvatarIKHint.RightKnee, ikRightKnee);
 
         // Head
