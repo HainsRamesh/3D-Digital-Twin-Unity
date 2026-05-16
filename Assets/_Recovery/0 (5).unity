@@ -450,11 +450,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 585cddde1d133a64ea92d08aa882d93c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 12
+      value: 12.200199
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 585cddde1d133a64ea92d08aa882d93c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -4.8
+      value: -4.7
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 585cddde1d133a64ea92d08aa882d93c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -525,7 +525,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e585e3030110a84f82576be82e55b7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PoseLandmarkReceiver
-  brokerAddress: 192.168.1.103
+  brokerAddress: 192.168.1.111
   brokerPort: 1883
   isEncrypted: 0
   connectionDelay: 500
@@ -542,21 +542,12 @@ MonoBehaviour:
   oneEuroMinCutoff: 2
   oneEuroBeta: 0.015
   minVisibility: 0.3
-  minWristVisibility: 0.55
-  bodyTwistDeadband: 0.4
-  bodyRotationDamping: 0.5
-  headTurnAmount: 0.5
-  handTwistWeight: 1
-  handTwistOffset: 0
-  handFlexAngle: -15
   missingHoldDelay: 0.5
   missingDecayRate: 0.3
   elbowForwardBias: 0.4
   kneeForwardBias: 0
   maxArmReach: 1.05
   maxLegReach: 0.98
-  groundSnapDistance: 0.2
-  footOffset: 0
   showDebugLogs: 1
   drawDebugSkeleton: 1
 --- !u!1660057539 &9223372036854775807

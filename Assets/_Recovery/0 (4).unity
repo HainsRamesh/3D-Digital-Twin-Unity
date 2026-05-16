@@ -119,63 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1001 &763622232
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: -8679921383154817045, guid: 620f92535c228384baae993ae8221812, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 11.765063
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 620f92535c228384baae993ae8221812, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.38864
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 620f92535c228384baae993ae8221812, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -8.138263
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 620f92535c228384baae993ae8221812, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 620f92535c228384baae993ae8221812, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 620f92535c228384baae993ae8221812, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 620f92535c228384baae993ae8221812, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 620f92535c228384baae993ae8221812, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 620f92535c228384baae993ae8221812, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 620f92535c228384baae993ae8221812, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 919132149155446097, guid: 620f92535c228384baae993ae8221812, type: 3}
-      propertyPath: m_Name
-      value: Tunnel
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 620f92535c228384baae993ae8221812, type: 3}
 --- !u!1 &826807735
 GameObject:
   m_ObjectHideFlags: 0
@@ -187,7 +130,6 @@ GameObject:
   - component: {fileID: 826807738}
   - component: {fileID: 826807737}
   - component: {fileID: 826807736}
-  - component: {fileID: 826807739}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -263,56 +205,12 @@ Transform:
   m_GameObject: {fileID: 826807735}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 19, y: 1, z: -10}
+  m_LocalPosition: {x: 0, y: 1, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &826807739
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 826807735}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalCameraData
-  m_RenderShadows: 1
-  m_RequiresDepthTextureOption: 2
-  m_RequiresOpaqueTextureOption: 2
-  m_CameraType: 0
-  m_Cameras: []
-  m_RendererIndex: -1
-  m_VolumeLayerMask:
-    serializedVersion: 2
-    m_Bits: 1
-  m_VolumeTrigger: {fileID: 0}
-  m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
-  m_Antialiasing: 0
-  m_AntialiasingQuality: 2
-  m_StopNaN: 0
-  m_Dithering: 0
-  m_ClearDepth: 1
-  m_AllowXRRendering: 1
-  m_AllowHDROutput: 1
-  m_UseScreenCoordOverride: 0
-  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
-  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
-  m_RequiresDepthTexture: 0
-  m_RequiresColorTexture: 0
-  m_TaaSettings:
-    m_Quality: 3
-    m_FrameInfluence: 0.1
-    m_JitterScale: 1
-    m_MipBias: 0
-    m_VarianceClampScale: 0.9
-    m_ContrastAdaptiveSharpening: 0
-  m_Version: 2
 --- !u!1 &1629060423
 GameObject:
   m_ObjectHideFlags: 0
@@ -450,15 +348,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 585cddde1d133a64ea92d08aa882d93c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 12
+      value: 3.2002
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 585cddde1d133a64ea92d08aa882d93c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -4.8
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 585cddde1d133a64ea92d08aa882d93c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 9.296259
+      value: 3.29626
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 585cddde1d133a64ea92d08aa882d93c, type: 3}
       propertyPath: m_LocalRotation.w
@@ -525,7 +423,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e585e3030110a84f82576be82e55b7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PoseLandmarkReceiver
-  brokerAddress: 192.168.1.103
+  brokerAddress: 192.168.7.7
   brokerPort: 1883
   isEncrypted: 0
   connectionDelay: 500
@@ -542,21 +440,8 @@ MonoBehaviour:
   oneEuroMinCutoff: 2
   oneEuroBeta: 0.015
   minVisibility: 0.3
-  minWristVisibility: 0.55
-  bodyTwistDeadband: 0.4
-  bodyRotationDamping: 0.5
-  headTurnAmount: 0.5
-  handTwistWeight: 1
-  handTwistOffset: 0
-  handFlexAngle: -15
   missingHoldDelay: 0.5
   missingDecayRate: 0.3
-  elbowForwardBias: 0.4
-  kneeForwardBias: 0
-  maxArmReach: 1.05
-  maxLegReach: 0.98
-  groundSnapDistance: 0.2
-  footOffset: 0
   showDebugLogs: 1
   drawDebugSkeleton: 1
 --- !u!1660057539 &9223372036854775807
@@ -566,4 +451,3 @@ SceneRoots:
   - {fileID: 826807738}
   - {fileID: 1629060425}
   - {fileID: 1662231334}
-  - {fileID: 763622232}
